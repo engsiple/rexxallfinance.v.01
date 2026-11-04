@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="id" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>REXXALLFINANCE - International Wealth & Smart Financial Planner</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            500: '#10b981',
+                            600: '#059669',
+                            700: '#047857',
+                            900: '#064e3b',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Google Fonts Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 font-sans transition-colors duration-300 min-h-screen flex flex-col">
+
+    <!-- AUTHENTICATION SCREEN (LOGIN / REGISTER) -->
+    <div id="authScreen" class="fixed inset-0 z-[100000] bg-slate-950/90 backdrop-blur-md flex items-center justify-center p-4">
+        <div class="w-full max-w-[360px] bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-2xl overflow-hidden p-6 relative">
+            <div class="text-center mb-5">
+                <div class="inline-flex items-center justify-center w-12 h-12 bg-emerald-500/10 text-emerald-500 rounded-xl mb-3">
+                    <i data-lucide="shield-check" class="w-6 h-6"></i>
+                </div>
+                <h1 class="text-xl font-bold text-slate-900 dark:text-white tracking-tight">REXXALLFINANCE</h1>
+                <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Smart Financial Planner & Executive Wealth</p>
+            </div>
+
+            <!-- Tab Buttons -->
+            <div class="flex bg-slate-100 dark:bg-slate-800 p-1 rounded-xl mb-5">
+                <button id="btnTabLogin" onclick="toggleAuthTab('login')" class="flex-1 py-1.5 text-xs font-semibold rounded-lg bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm transition-all">Login</button>
+                <button id="btnTabRegister" onclick="toggleAuthTab('register')" class="flex-1 py-1.5 text-xs font-semibold rounded-lg text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-all">Buat Akun</button>
+            </div>
+
+            <!-- LOGIN FORM -->
+            <form id="formLogin" onsubmit="handleAuthSubmit(event, 'login')" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">Username / Email</label>
+                    <input type="text" id="loginUsername" required placeholder="afif_rasyid" class="w-full px-3 py-2 text-sm bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">Kata Sandi</label>
+                    <div class="relative">
+                        <input type="password" id="loginPassword" required placeholder="••••••••" class="w-full px-3 py-2 text-sm bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                        <button type="button" onclick="togglePasswordVisibility('loginPassword')" class="absolute right-3 top-2.5 text-slate-400 hover:text-slate-600">
+                            <i data-lucide="eye" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+                </div>
+                <button type="submit" class="w-full py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-medium text-sm rounded-xl transition-all shadow-md flex items-center justify-center gap-2">
+                    Masuk ke Dashboard <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                </button>
+            </form>
+
+            <!-- REGISTER FORM -->
+            <form id="formRegister" onsubmit="handleAuthSubmit(event, 'register')" class="space-y-3 hidden">
+                <!-- Green Verification Banner -->
+                <div class="bg-emerald-500/15 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 text-xs p-3 rounded-xl flex items-start gap-2">
+                    <i data-lucide="check-circle-2" class="w-4 h-4 shrink-0 mt-0.5"></i>
+                    <span>Pendaftaran berhasil! Silakan cek kotak masuk email Anda untuk melakukan verifikasi akun sebelum login.</span>
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">Alamat Email</label>
+                    <input type="email" id="regEmail" required placeholder="afif.rasyid@example.com" class="w-full px-3 py-2 text-sm bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">Kata Sandi</label>
+                    <input type="password" id="regPassword" required placeholder="••••••••" class="w-full px-3 py-2 text-sm bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">Kode Referral (Opsional)</label>
+                    <input type="text" placeholder="REXX-2026" class="w-full px-3 py-2 text-sm bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                </div>
+                <button type="submit" class="w-full py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-medium text-sm rounded-xl transition-all shadow-md">Daftar Sekarang</button>
+            </form>
+
+            <div class="relative my-4">
+                <div class="absolute inset-0 flex items-center"><div class="w-full border-t border-slate-200 dark:border-slate-800"></div></div>
+                <div class="relative flex justify-center text-[10px] uppercase"><span class="bg-white dark:bg-slate-900 px-2 text-slate-400">Atau</span></div>
+            </div>
+
+            <button onclick="handleGoogleSSO()" class="w-full py-2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-medium text-xs rounded-xl flex items-center justify-center gap-2 border border-slate-200 dark:border-slate-700 transition-all">
+                <svg class="w-4 h-4" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/></svg>
+                Masuk dengan Google
+            </button>
+            
+            <p class="text-[10px] text-center text-slate-400 mt-4 flex items-center justify-center gap-1">
+                <i data-lucide="lock" class="w-3 h-3 text-emerald-500"></i> Terenkripsi End-to-End (E2EE 256-bit)
+            </p>
+        </div>
+    </div>
+
+    <!-- HEADER / NAVIGATION -->
+    <header class="bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
+            <!-- Brand -->
+            <div class="flex items-center gap-3">
+                <div class="w-9 h-9 bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 rounded-xl flex items-center justify-center font-bold text-lg">R</div>
+                <div>
+                    <h1 class="font-bold text-base tracking-tight text-slate-900 dark:text-white">REXXALLFINANCE</h1>
+                    <p class="text-[10px] text-slate-500 dark:text-slate-400">Executive Wealth Manager</p>
+                </div>
+            </div>
+
+            <!-- Controls: Dark/Light Toggle + User Dropdown Trigger -->
+            <div class="flex items-center gap-2">
+                <!-- Theme Toggle Button (Light/Dark Only) -->
+                <button onclick="toggleTheme()" class="w-9 h-9 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 flex items-center justify-center transition-all">
+                    <i data-lucide="sun" class="w-4 h-4 hidden dark:block"></i>
+                    <i data-lucide="moon" class="w-4 h-4 block dark:hidden"></i>
+                </button>
+
+                <!-- Profile Dropdown Trigger -->
+                <div class="relative">
+                    <button id="btnProfileDropdown" onclick="toggleDropdownMenu()" class="flex items-center gap-2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 transition-all">
+                        <div id="headerAvatar" class="w-6 h-6 bg-emerald-600 text-white rounded-lg flex items-center justify-center text-xs font-semibold">AR</div>
+                        <span id="headerName" class="text-xs font-semibold text-slate-700 dark:text-slate-200 hidden sm:inline">Afif Nur Rasyid</span>
+                        <i data-lucide="chevron-down" class="w-3.5 h-3.5 text-slate-400"></i>
+                    </button>
+
+                    <!-- SLIDE DOWN DROPDOWN MENU -->
+                    <div id="dropdownMenu" class="hidden absolute right-0 mt-2 w-64 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-xl overflow-hidden z-[999999] transition-all">
+                        <div class="p-3 bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-800 flex items-center gap-3">
+                            <div id="dropAvatar" class="w-9 h-9 bg-emerald-600 text-white rounded-xl flex items-center justify-center font-semibold text-sm">AR</div>
+                            <div class="overflow-hidden">
+                                <h4 id="dropName" class="text-xs font-bold text-slate-900 dark:text-white truncate">Afif Nur Rasyid</h4>
+                                <p id="dropEmail" class="text-[10px] text-slate-500 dark:text-slate-400 truncate">afif.rasyid@example.com</p>
+                            </div>
+                        </div>
+                        <div class="p-1 space-y-0.5">
+                            <button onclick="navTo('dashboard')" class="w-full text-left px-3 py-2 text-xs font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl flex items-center gap-2.5">
+                                <i data-lucide="layout-dashboard" class="w-4 h-4 text-emerald-500"></i> Dashboard Utama
+                            </button>
+                            <button onclick="navTo('wishlist')" class="w-full text-left px-3 py-2 text-xs font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl flex items-center gap-2.5">
+                                <i data-lucide="gift" class="w-4 h-4 text-amber-500"></i> Wishlist & Target Impian
+                            </button>
+                            <button onclick="navTo('analytics')" class="w-full text-left px-3 py-2 text-xs font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl flex items-center gap-2.5">
+                                <i data-lucide="bar-chart-2" class="w-4 h-4 text-blue-500"></i> Analytics & Evaluasi
+                            </button>
+                            <button onclick="navTo('news')" class="w-full text-left px-3 py-2 text-xs font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl flex items-center gap-2.5">
+                                <i data-lucide="newspaper" class="w-4 h-4 text-emerald-500"></i> Berita Pasar Keuangan
+                            </button>
+                            <button onclick="navTo('profile')" class="w-full text-left px-3 py-2 text-xs font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl flex items-center gap-2.5">
+                                <i data-lucide="user" class="w-4 h-4 text-purple-500"></i> Profil & Pengaduan
+                            </button>
+                            <button onclick="openModal('modalPPT')" class="w-full text-left px-3 py-2 text-xs font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl flex items-center gap-2.5">
+                                <i data-lucide="presentation" class="w-4 h-4 text-teal-500"></i> Slide PPT Proyeksi
+                            </button>
+                            <div class="h-px bg-slate-200 dark:bg-slate-800 my-1"></div>
+                            <button onclick="handleLogout()" class="w-full text-left px-3 py-2 text-xs font-medium text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/30 rounded-xl flex items-center gap-2.5">
+                                <i data-lucide="log-out" class="w-4 h-4"></i> Keluar / Logout
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN CONTAINER -->
+    <main class="max-w-6xl mx-auto px-4 py-6 flex-1 w-full space-y-6">
+
+        <!-- HEADER BANNER & PERIOD CONTROL -->
+        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-5 rounded-2xl shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div>
+                <h2 id="welcomeHeading" class="text-lg font-bold text-slate-900 dark:text-white">Selamat Datang, Afif Nur Rasyid 👋</h2>
+                <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Sistem alokasi anggaran otomatis berbasis formula ideal 40-30-20-10 & evaluasi transparan.</p>
+            </div>
+            <!-- Custom Period Control Badge -->
+            <button onclick="openModal('modalPeriod')" class="self-start md:self-auto px-3 py-1.5 bg-emerald-500/10 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 rounded-xl text-xs font-semibold flex items-center gap-2 hover:bg-emerald-500/20 transition-all">
+                <i data-lucide="calendar" class="w-3.5 h-3.5"></i>
+                <span id="txtPeriodLabel">Periode Active: Nov 2026 - Apr 2027</span>
+                <i data-lucide="edit-3" class="w-3 h-3 opacity-60"></i>
+            </button>
+        </div>
+
+        <!-- PAGE TAB 1: DASHBOARD UTAMA -->
+        <section id="tabDashboard" class="space-y-6">
+
+            <!-- INPUT PEMASUKAN DINAMIS & ALOKASI -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Form Income -->
+                <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-5 rounded-2xl shadow-sm space-y-4">
+                    <div class="flex items-center gap-2 text-slate-900 dark:text-white font-semibold text-sm border-b border-slate-100 dark:border-slate-800 pb-3">
+                        <i data-lucide="wallet" class="w-4 h-4 text-emerald-500"></i>
+                        Input Pemasukan Harian Dinamis
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">Uang Pokok Harian (Base Income)</label>
+                        <div class="relative">
+                            <span class="absolute left-3 top-2.5 text-xs font-semibold text-slate-400">Rp</span>
+                            <input type="text" id="inputBaseIncome" value="50.000" class="rupiah-input w-full pl-9 pr-3 py-2 text-sm bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 rounded-xl font-semibold focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">Uang Tambahan (Extra Income)</label>
+                        <div class="relative">
+                            <span class="absolute left-3 top-2.5 text-xs font-semibold text-slate-400">Rp</span>
+                            <input type="text" id="inputExtraIncome" value="0" class="rupiah-input w-full pl-9 pr-3 py-2 text-sm bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 rounded-xl font-semibold focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                        </div>
+                    </div>
+
+                    <div class="bg-emerald-500/10 border border-emerald-500/20 p-3 rounded-xl flex items-center justify-between">
+                        <span class="text-xs font-medium text-emerald-600 dark:text-emerald-400">Total Akumulasi Harian:</span>
+                        <span id="txtTotalIncome" class="text-base font-bold text-emerald-600 dark:text-emerald-400">Rp 50.000</span>
+                    </div>
+                </div>
+
+                <!-- CARDS ALOKASI ANGGARAN (40-30-20-10) -->
+                <div class="lg:col-span-2 grid grid-cols-2 sm:grid-cols-4 gap-4">
+                    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-4 rounded-2xl shadow-sm flex flex-col justify-between">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs text-slate-500 dark:text-slate-400 font-medium">Pribadi (40%)</span>
+                            <div class="w-7 h-7 bg-blue-500/10 text-blue-500 rounded-lg flex items-center justify-center"><i data-lucide="user" class="w-3.5 h-3.5"></i></div>
+                        </div>
+                        <div class="mt-3">
+                            <p id="allocPribadi" class="text-base font-bold text-blue-600 dark:text-blue-400">Rp 20.000</p>
+                            <p class="text-[10px] text-slate-400 mt-0.5">Kebutuhan Rutin</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-4 rounded-2xl shadow-sm flex flex-col justify-between">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs text-slate-500 dark:text-slate-400 font-medium">Jajan (30%)</span>
+                            <div class="w-7 h-7 bg-amber-500/10 text-amber-500 rounded-lg flex items-center justify-center"><i data-lucide="coffee" class="w-3.5 h-3.5"></i></div>
+                        </div>
+                        <div class="mt-3">
+                            <p id="allocJajan" class="text-base font-bold text-amber-600 dark:text-amber-400">Rp 15.000</p>
+                            <p class="text-[10px] text-slate-400 mt-0.5">Snack & Coffee</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-4 rounded-2xl shadow-sm flex flex-col justify-between">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs text-slate-500 dark:text-slate-400 font-medium">Tabungan (20%)</span>
+                            <div class="w-7 h-7 bg-emerald-500/10 text-emerald-500 rounded-lg flex items-center justify-center"><i data-lucide="vault" class="w-3.5 h-3.5"></i></div>
+                        </div>
+                        <div class="mt-3">
+                            <p id="allocTabungan" class="text-base font-bold text-emerald-600 dark:text-emerald-400">Rp 10.000</p>
+                            <p class="text-[10px] text-slate-400 mt-0.5">Target Impian</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-4 rounded-2xl shadow-sm flex flex-col justify-between">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs text-slate-500 dark:text-slate-400 font-medium">Darurat (10%)</span>
+                            <div class="w-7 h-7 bg-rose-500/10 text-rose-500 rounded-lg flex items-center justify-center"><i data-lucide="shield-alert" class="w-3.5 h-3.5"></i></div>
+                        </div>
+                        <div class="mt-3">
+                            <p id="allocDarurat" class="text-base font-bold text-rose-600 dark:text-rose-400">Rp 5.000</p>
+                            <p class="text-[10px] text-slate-400 mt-0.5">Dana Siaga</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ADD EXPENSE FORM & QUICK SUMMARY -->
+            <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-5 rounded-2xl shadow-sm">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="font-semibold text-sm text-slate-900 dark:text-white flex items-center gap-2">
+                        <i data-lucide="plus-circle" class="w-4 h-4 text-emerald-500"></i> Catat Pengeluaran Evaluasi Baru
+                    </h3>
+                    <button onclick="resetDataToZero()" class="text-xs text-rose-500 hover:text-rose-600 flex items-center gap-1 font-medium">
+                        <i data-lucide="trash-2" class="w-3.5 h-3.5"></i> Kosongkan Semua Data
+                    </button>
+                </div>
+                <form id="formAddExpense" onsubmit="handleAddExpense(event)" class="grid grid-cols-1 sm:grid-cols-4 gap-3">
+                    <input type="text" id="expDesc" required placeholder="Keterangan pengeluaran..." class="px-3 py-2 text-xs bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                    <input type="text" id="expAmount" required placeholder="Nominal (Rp)" class="rupiah-input px-3 py-2 text-xs bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                    <select id="expCategory" class="px-3 py-2 text-xs bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                        <option value="Pribadi">Kebutuhan Pribadi</option>
+                        <option value="Jajan">Jajan & Hiburan</option>
+                        <option value="Tabungan">Tabungan</option>
+                        <option value="Darurat">Dana Darurat</option>
+                    </select>
+                    <button type="submit" class="py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-medium text-xs rounded-xl transition-all flex items-center justify-center gap-1">
+                        <i data-lucide="plus" class="w-3.5 h-3.5"></i> Tambah Transaksi
+                    </button>
+                </form>
+            </div>
+        </section>
+
+        <!-- PAGE TAB 2: WISHLIST (REAL ESTATE & MARKETPLACE) -->
+        <section id="tabWishlist" class="space-y-6 hidden">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                    <h2 class="text-lg font-bold text-slate-900 dark:text-white">Wishlist & Target Impian</h2>
+                    <p class="text-xs text-slate-500 dark:text-slate-400">Terhubung dengan link Tokopedia, Shopee, Blibli, Lazada & Real Estate.</p>
+                </div>
+                <button onclick="openModal('modalAddWishlist')" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-medium text-xs rounded-xl flex items-center gap-2 shadow-md transition-all self-start sm:self-auto">
+                    <i data-lucide="plus" class="w-4 h-4"></i> Tambah Target Impian
+                </button>
+            </div>
+
+            <!-- WISHLIST CARDS GRID -->
+            <div id="wishlistGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                <!-- Dynamic Wishlist Cards Render Here -->
+            </div>
+        </section>
+
+        <!-- PAGE TAB 3: ANALYTICS & EVALUASI AUDIT -->
+        <section id="tabAnalytics" class="space-y-6 hidden">
+            <h2 class="text-lg font-bold text-slate-900 dark:text-white">Analytics & Laporan Evaluasi Audit</h2>
+
+            <!-- CHARTS GRID -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-5 rounded-2xl shadow-sm">
+                    <h3 class="text-xs font-bold text-slate-700 dark:text-slate-300 mb-4 flex items-center gap-2">
+                        <i data-lucide="line-chart" class="w-4 h-4 text-emerald-500"></i> Tren Pemasukan vs Pengeluaran
+                    </h3>
+                    <div class="h-56 relative"><canvas id="chartTrend"></canvas></div>
+                </div>
+
+                <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-5 rounded-2xl shadow-sm">
+                    <h3 class="text-xs font-bold text-slate-700 dark:text-slate-300 mb-4 flex items-center gap-2">
+                        <i data-lucide="pie-chart" class="w-4 h-4 text-amber-500"></i> Proporsi Alokasi Riil
+                    </h3>
+                    <div class="h-56 relative flex justify-center"><canvas id="chartDoughnut"></canvas></div>
+                </div>
+            </div>
+
+            <!-- EVALUATION TRANSACTIONS TABLE -->
+            <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-5 rounded-2xl shadow-sm space-y-4">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <h3 class="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                        <i data-lucide="file-spreadsheet" class="w-4 h-4 text-emerald-500"></i> Tabel Evaluasi Transaksi Harian
+                    </h3>
+                    <button onclick="exportCSV()" class="px-3 py-1.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-xl text-xs font-medium flex items-center gap-1.5 border border-slate-200 dark:border-slate-700 transition-all">
+                        <i data-lucide="download" class="w-3.5 h-3.5"></i> Ekspor CSV / Excel
+                    </button>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-xs border-collapse">
+                        <thead>
+                            <tr class="bg-slate-50 dark:bg-slate-800/60 text-slate-500 dark:text-slate-400 border-b border-slate-200 dark:border-slate-800">
+                                <th class="p-3">Tanggal</th>
+                                <th class="p-3">Keterangan</th>
+                                <th class="p-3">Kategori</th>
+                                <th class="p-3">Nominal</th>
+                                <th class="p-3 text-right">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableExpenseBody" class="divide-y divide-slate-100 dark:divide-slate-800/50">
+                            <!-- Transactions Dynamic Rows -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- PAGE TAB 4: BERITA PASAR KELEUANGAN -->
+        <section id="tabNews" class="space-y-6 hidden">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h2 class="text-lg font-bold text-slate-900 dark:text-white">Berita Pasar Keuangan & Komoditas</h2>
+                    <p class="text-xs text-slate-500 dark:text-slate-400">Update harga emas Antam, IHSG, nilai tukar Rupiah & berita pasar global.</p>
+                </div>
+                <button onclick="loadMarketNews()" class="px-3 py-1.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-xs font-semibold rounded-xl flex items-center gap-1">
+                    <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i> Refresh
+                </button>
+            </div>
+
+            <!-- Market News Grid -->
+            <div id="marketNewsGrid" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- Loaded via PHP API -->
+            </div>
+        </section>
+
+        <!-- PAGE TAB 5: PROFIL SAYA & PENGADUAN EMAIL -->
+        <section id="tabProfile" class="space-y-6 hidden">
+            <!-- Profile Info Card -->
+            <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 rounded-2xl shadow-sm text-center space-y-4">
+                <div class="w-20 h-20 bg-emerald-600 text-white font-bold text-2xl rounded-2xl mx-auto flex items-center justify-center shadow-md">AR</div>
+                <div>
+                    <h2 id="profName" class="text-lg font-bold text-slate-900 dark:text-white">Afif Nur Rasyid</h2>
+                    <p id="profTitle" class="text-xs font-medium text-emerald-600 dark:text-emerald-400">Executive Financial Member</p>
+                    <p id="profEmail" class="text-xs text-slate-500 dark:text-slate-400 mt-1">afif.rasyid@example.com</p>
+                </div>
+
+                <div class="flex flex-wrap items-center justify-center gap-3 pt-2">
+                    <button onclick="openModal('modalEditProfile')" class="px-4 py-2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-xl text-xs font-semibold flex items-center gap-1.5 border border-slate-200 dark:border-slate-700 transition-all">
+                        <i data-lucide="edit" class="w-3.5 h-3.5"></i> Edit Profil
+                    </button>
+                    <button onclick="sendWAReport()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-semibold flex items-center gap-1.5 shadow-md transition-all">
+                        <i data-lucide="message-square" class="w-3.5 h-3.5"></i> Kirim Laporan ke WA
+                    </button>
+                </div>
+            </div>
+
+            <!-- OFFICIAL HELPDESK / PENGADUAN EMAIL -->
+            <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-5 rounded-2xl shadow-sm space-y-4">
+                <div class="flex items-center gap-2 border-b border-slate-100 dark:border-slate-800 pb-3">
+                    <i data-lucide="life-buoy" class="w-4 h-4 text-emerald-500"></i>
+                    <h3 class="text-sm font-bold text-slate-900 dark:text-white">Pusat Layanan Pengaduan & Layanan Nasabah</h3>
+                </div>
+                <p class="text-xs text-slate-500 dark:text-slate-400">Adukan masalah transaksi atau pertanyaan seputar platform langsung ke email resmi:</p>
+                <div class="bg-slate-50 dark:bg-slate-800/60 p-3 rounded-xl border border-slate-200 dark:border-slate-700 text-xs font-semibold text-emerald-600 dark:text-emerald-400 flex items-center gap-2">
+                    <i data-lucide="mail" class="w-4 h-4"></i> noreply.afif@gmail.com
+                </div>
+
+                <form onsubmit="handleComplaintSubmit(event)" class="space-y-3">
+                    <input type="text" id="compSubject" required placeholder="Subjek Pengaduan / Topik..." class="w-full px-3 py-2 text-xs bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                    <textarea id="compMessage" rows="3" required placeholder="Tuliskan rincian pengaduan atau masukan Anda..." class="w-full px-3 py-2 text-xs bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500"></textarea>
+                    <button type="submit" class="w-full py-2 bg-slate-900 dark:bg-slate-800 hover:bg-slate-800 dark:hover:bg-slate-700 text-white text-xs font-semibold rounded-xl transition-all">Kirim Email Pengaduan</button>
+                </form>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FLOATING AI ASSISTANT CHAT WIDGET -->
+    <div class="fixed bottom-5 right-5 z-50">
+        <button id="btnAiToggle" onclick="toggleAiModal()" class="w-12 h-12 bg-emerald-600 hover:bg-emerald-700 text-white rounded-full flex items-center justify-center shadow-xl transition-all transform hover:scale-105">
+            <i data-lucide="bot" class="w-6 h-6"></i>
+        </button>
+
+        <div id="aiChatBox" class="hidden absolute bottom-16 right-0 w-80 sm:w-96 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-2xl overflow-hidden flex flex-col h-[420px]">
+            <div class="p-3 bg-emerald-600 text-white flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                    <i data-lucide="sparkles" class="w-4 h-4"></i>
+                    <span class="text-xs font-bold">REXX AI Financial Advisor</span>
+                </div>
+                <button onclick="toggleAiModal()" class="text-white/80 hover:text-white"><i data-lucide="x" class="w-4 h-4"></i></button>
+            </div>
+
+            <div id="aiMessages" class="p-3 flex-1 overflow-y-auto space-y-3 text-xs">
+                <div class="bg-slate-100 dark:bg-slate-800 p-2.5 rounded-xl text-slate-700 dark:text-slate-200 max-w-[85%]">
+                    Halo Afif! Saya REXX AI. Ada yang bisa saya bantu terkait alokasi 40-30-20-10 atau strategi menabung hari ini?
+                </div>
+            </div>
+
+            <form onsubmit="handleAiSendMessage(event)" class="p-2 border-t border-slate-200 dark:border-slate-800 flex gap-2 bg-slate-50 dark:bg-slate-900">
+                <input type="text" id="aiInput" placeholder="Ketik pertanyaan finansial..." class="flex-1 px-3 py-1.5 text-xs bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                <button type="submit" class="p-2 bg-emerald-600 text-white rounded-xl hover:bg-emerald-700"><i data-lucide="send" class="w-3.5 h-3.5"></i></button>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL: ADD WISHLIST -->
+    <div id="modalAddWishlist" class="hidden fixed inset-0 z-[100000] bg-slate-950/60 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="w-full max-w-md bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-2xl p-5 space-y-4">
+            <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
+                <h3 class="text-sm font-bold text-slate-900 dark:text-white">Tambah Target Impian / Wishlist Baru</h3>
+                <button onclick="closeModal('modalAddWishlist')" class="text-slate-400 hover:text-slate-600"><i data-lucide="x" class="w-4 h-4"></i></button>
+            </div>
+            <form onsubmit="handleAddWishlist(event)" class="space-y-3">
+                <div>
+                    <label class="block text-xs font-medium text-slate-500 mb-1">Nama Barang / Target Impian</label>
+                    <input type="text" id="wName" required placeholder="Contoh: Villa Canggu / Drone DJI" class="w-full px-3 py-2 text-xs bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-slate-500 mb-1">Nominal Target (Rp)</label>
+                    <input type="text" id="wTarget" required placeholder="20.000.000" class="rupiah-input w-full px-3 py-2 text-xs bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-slate-500 mb-1">Pilih Marketplace / Toko</label>
+                    <select id="wMarketplace" class="w-full px-3 py-2 text-xs bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                        <option value="Tokopedia">Tokopedia</option>
+                        <option value="Shopee">Shopee</option>
+                        <option value="Blibli">Blibli</option>
+                        <option value="Lazada">Lazada</option>
+                        <option value="Real Estate">Real Estate / Properti</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-slate-500 mb-1">Link Produk Marketplace (URL)</label>
+                    <input type="url" id="wLink" placeholder="https://shopee.co.id/..." class="w-full px-3 py-2 text-xs bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-slate-500 mb-1">URL Gambar Produk</label>
+                    <input type="url" id="wImg" placeholder="https://images.unsplash.com/..." class="w-full px-3 py-2 text-xs bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                </div>
+                <button type="submit" class="w-full py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs rounded-xl shadow-md transition-all">Simpan Target Impian</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL: PERIOD CONTROL -->
+    <div id="modalPeriod" class="hidden fixed inset-0 z-[100000] bg-slate-950/60 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="w-full max-w-sm bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-2xl p-5 space-y-4">
+            <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
+                <h3 class="text-sm font-bold text-slate-900 dark:text-white">Pengaturan Periode Aktif</h3>
+                <button onclick="closeModal('modalPeriod')" class="text-slate-400 hover:text-slate-600"><i data-lucide="x" class="w-4 h-4"></i></button>
+            </div>
+            <form onsubmit="handleSavePeriod(event)" class="space-y-3">
+                <div>
+                    <label class="block text-xs font-medium text-slate-500 mb-1">Bulan Awal</label>
+                    <input type="month" id="perStart" value="2026-11" class="w-full px-3 py-2 text-xs bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-slate-500 mb-1">Bulan Akhir</label>
+                    <input type="month" id="perEnd" value="2027-04" class="w-full px-3 py-2 text-xs bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none">
+                </div>
+                <button type="submit" class="w-full py-2 bg-emerald-600 text-white font-medium text-xs rounded-xl shadow-md">Terapkan Periode</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL: EDIT PROFILE -->
+    <div id="modalEditProfile" class="hidden fixed inset-0 z-[100000] bg-slate-950/60 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="w-full max-w-sm bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-2xl p-5 space-y-4">
+            <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
+                <h3 class="text-sm font-bold text-slate-900 dark:text-white">Edit Profil Pengguna</h3>
+                <button onclick="closeModal('modalEditProfile')" class="text-slate-400 hover:text-slate-600"><i data-lucide="x" class="w-4 h-4"></i></button>
+            </div>
+            <form onsubmit="handleSaveProfile(event)" class="space-y-3">
+                <div>
+                    <label class="block text-xs font-medium text-slate-500 mb-1">Nama Lengkap</label>
+                    <input type="text" id="editName" required value="Afif Nur Rasyid" class="w-full px-3 py-2 text-xs bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-slate-500 mb-1">Gelar / Jabatan</label>
+                    <input type="text" id="editTitle" value="Executive Financial Member" class="w-full px-3 py-2 text-xs bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-slate-500 mb-1">Alamat Email</label>
+                    <input type="email" id="editEmail" value="afif.rasyid@example.com" class="w-full px-3 py-2 text-xs bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl">
+                </div>
+                <button type="submit" class="w-full py-2 bg-emerald-600 text-white font-medium text-xs rounded-xl shadow-md">Simpan Perubahan</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL: SLIDE PPT 6-BULAN VIEWER -->
+    <div id="modalPPT" class="hidden fixed inset-0 z-[100000] bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4">
+        <div class="w-full max-w-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-2xl p-6 space-y-4">
+            <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
+                <h3 class="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                    <i data-lucide="presentation" class="w-4 h-4 text-emerald-500"></i> Slide PPT Proyeksi Keuangan 6-Bulan
+                </h3>
+                <button onclick="closeModal('modalPPT')" class="text-slate-400 hover:text-slate-600"><i data-lucide="x" class="w-4 h-4"></i></button>
+            </div>
+            
+            <div class="bg-slate-50 dark:bg-slate-800/50 p-5 rounded-2xl border border-slate-200 dark:border-slate-700 space-y-3">
+                <span class="px-2.5 py-1 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-semibold text-[10px] rounded-full uppercase tracking-wider">Slide 1 of 3 - Executive Strategy</span>
+                <h4 class="text-base font-bold text-slate-900 dark:text-white">Formulasi Alokasi Mandiri 40-30-20-10</h4>
+                <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+                    Dengan komitmen harian Rp 50.000, alokasi terdistribusi secara seimbang untuk kebutuhan harian (40%), lifestyle (30%), tabungan target impian (20%), dan pertahanan dana darurat (10%).
+                </p>
+            </div>
+
+            <div class="flex justify-end gap-2">
+                <button onclick="closeModal('modalPPT')" class="px-4 py-2 bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-200 font-semibold text-xs rounded-xl">Tutup Preview</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/crypto-utils.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>

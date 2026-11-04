@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 80" width="300" height="80">
+  <defs>
+    <linearGradient id="gradEmerald" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#10B981" />
+      <stop offset="100%" stop-color="#047857" />
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#10B981" flood-opacity="0.25"/>
+    </filter>
+  </defs>
+  <!-- Symbol Icon -->
+  <rect x="10" y="15" width="50" height="50" rx="14" fill="url(#gradEmerald)" filter="url(#shadow)" />
+  <path d="M 25 48 L 25 32 C 25 28 29 26 34 26 C 39 26 43 29 43 33 C 43 38 32 38 32 42 C 32 45 45 45 45 48" fill="none" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="35" cy="22" r="2.5" fill="#FFFFFF"/>
+  <circle cx="35" cy="53" r="2.5" fill="#FFFFFF"/>
+  
+  <!-- Text Brand -->
+  <text x="72" y="42" font-family="'Inter', sans-serif" font-weight="800" font-size="20" fill="#0F172A" letter-spacing="0.5">REXXALL<tspan fill="#10B981">FINANCE</tspan></text>
+  <text x="72" y="56" font-family="'Inter', sans-serif" font-weight="500" font-size="9" fill="#64748B" letter-spacing="1.2">WEALTH & FINANCIAL MANAGEMENT</text>
+</svg>
